@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { CommitHistoryModule } from './commit-history/commit-history.module';
 
-@Module({})
+@Module({
+  imports: [CommitHistoryModule],
+})
 export class ModulesModule {}
