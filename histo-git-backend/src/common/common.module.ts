@@ -5,9 +5,11 @@ import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { ValidationPipe } from './pipes/validation.pipe';
 import { TransformDataInterceptor } from './interceptors/transform-data.interceptor';
+import { BaseService } from './base/base.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [],
+  imports: [HttpModule],
   providers: [
     {
       provide: APP_FILTER,
@@ -25,6 +27,7 @@ import { TransformDataInterceptor } from './interceptors/transform-data.intercep
       provide: APP_INTERCEPTOR,
       useClass: TransformDataInterceptor,
     },
+    BaseService,
   ],
   exports: [],
 })

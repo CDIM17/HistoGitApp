@@ -1,19 +1,13 @@
-import { Type } from '@nestjs/common';
-import { BaseInterface } from './base.interface';
-import { BaseEntity } from './entity/base.entity';
+// base.service.ts
+import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { map } from 'rxjs/operators';
 
-export function BaseFunction<T extends BaseEntity>(): Type<BaseInterface<T>> {
-  class BaseService implements BaseInterface<T> {
-    public async getAll(): Promise<T[]> {
-      return [];
-    }
+@Injectable()
+export class BaseService {
+  constructor(protected httpService: HttpService) {}
 
-    public async findOne(id: string): Promise<T> {
-      return new Promise((resolve) => {
-        const entity: T = { id } as T;
-        resolve(entity);
-      });
-    }
+  fetchData(url: string) {
+    return this.httpService.get(url).pipe(map((response) => response.data));
   }
-  return BaseService;
 }

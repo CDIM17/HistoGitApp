@@ -1,26 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCommitHistoryDto } from './dto/create-commit-history.dto';
-import { UpdateCommitHistoryDto } from './dto/update-commit-history.dto';
+import { BaseService } from '../../common/base/base.service';
+import { CommitMapper } from './mappers/commit-history.mapper';
+import { GithubApiResponse } from './interface/github-api-response.interface';
+import { map } from 'rxjs';
 
 @Injectable()
 export class CommitHistoryService {
-  create(createCommitHistoryDto: CreateCommitHistoryDto) {
-    return 'This action adds a new commitHistory';
-  }
+  private readonly commitMapper = new CommitMapper();
+
+  constructor(private baseService: BaseService) {}
 
   findAll() {
-    return `This action returns all commitHistory`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} commitHistory`;
-  }
-
-  update(id: number, updateCommitHistoryDto: UpdateCommitHistoryDto) {
-    return `This action updates a #${id} commitHistory`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} commitHistory`;
+    return this.baseService
+      .fetchData('https://api.github.com/repos/CDIM17/HistoGitApp/commits')
+      .pipe(
+        map((data) =>
+          data.map((commit: GithubApiResponse) =>
+            this.commitMapper.mapFrom(commit),
+          ),
+        ),
+      );
   }
 }

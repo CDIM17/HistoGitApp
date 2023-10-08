@@ -1,4 +1,4 @@
-export class CommitHistory {
+export class CommitHistoryDto {
   sha: string;
   message: string;
   date: string;
