@@ -5,18 +5,19 @@ import {
   CommitHistory,
   CommitHistoryResponseApi,
 } from '../interfaces/commit-history.interface';
+import { environment } from 'src/environments/environment';
+
+const BASE_URL = environment.BASE_URL;
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommitHistoryService {
-  private readonly BASE_URL = 'http://localhost:3000/api/commit-history';
-
   constructor(private baseService: BaseService) {}
 
   getCommitHistory(): Observable<CommitHistory[]> {
     return this.baseService
-      .get<CommitHistoryResponseApi>(this.BASE_URL)
+      .get<CommitHistoryResponseApi>(BASE_URL)
       .pipe(map((response) => response.data));
   }
 }
