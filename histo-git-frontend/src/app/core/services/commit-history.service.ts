@@ -1,17 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { BaseService } from './base.service';
+import {
+  CommitHistory,
+  CommitHistoryResponseApi,
+} from '../interfaces/commit-history.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommitHistoryService {
-  private readonly BASE_URL =
-    'https://api.github.com/repos/CDIM17/HistoGitApp/commits';
+  private readonly BASE_URL = 'http://localhost:3000/api/commit-history';
 
   constructor(private baseService: BaseService) {}
 
-  getCommits(): Observable<any> {
-    return this.baseService.get(this.BASE_URL);
+  getCommitHistory(): Observable<CommitHistory[]> {
+    return this.baseService
+      .get<CommitHistoryResponseApi>(this.BASE_URL)
+      .pipe(map((response) => response.data));
   }
 }
