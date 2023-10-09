@@ -10,7 +10,8 @@ export class CommitMapper extends Mapper<GithubApiResponse, CommitHistoryDto> {
       date: param.commit.author.date,
       authorName: param.commit.author.name,
       authorAvatar: param.author.avatar_url,
-      url: param.html_url,
+      authorEmail: param.commit.author.email,
+      url: param.url,
     };
   }
 

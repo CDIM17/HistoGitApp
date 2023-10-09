@@ -3,6 +3,7 @@ export class CommitHistoryDto {
   message: string;
   date: string;
   authorName: string;
+  authorEmail: string;
   authorAvatar: string;
   url: string;
 }
