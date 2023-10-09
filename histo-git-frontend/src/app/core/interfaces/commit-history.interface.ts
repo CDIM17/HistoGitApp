@@ -1,7 +1,7 @@
 export interface CommitHistory {
   sha: string;
   message: string;
-  date: Date;
+  date: string;
   authorName: string;
   authorAvatar: string;
   authorEmail: string;
