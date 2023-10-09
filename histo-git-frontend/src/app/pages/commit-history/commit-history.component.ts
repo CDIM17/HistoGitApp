@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommitHistory } from 'src/app/core/interfaces/commit-history.interface';
 import { CommitHistoryService } from 'src/app/core/services/commit-history.service';
 import { Carousel, Dropdown, initTE, Collapse, Datatable } from 'tw-elements';
@@ -23,7 +23,6 @@ export class CommitHistoryComponent implements OnInit {
 
   ngOnInit() {
     initTE({ Carousel, Dropdown, Collapse });
-
     this.getCommitHistory();
   }
 
@@ -31,20 +30,28 @@ export class CommitHistoryComponent implements OnInit {
     this.commitHistoryService
       .getCommitHistory()
       .subscribe((serverData: CommitHistory[]) => {
-        const transformedData = {
-          columns: this.columns,
-          rows: serverData.map((item) => ({
-            id: item.sha,
-            photo: `<img src="${item.authorAvatar}" alt="'User Avatar'" class="h-10 w-10 rounded-full">`,
-            author: item.authorName,
-            email: item.authorEmail,
-            message: item.message,
-            date: item.date,
-          })),
-        };
-
-        new Datatable(document.getElementById('datatable'), transformedData);
+        this.commitHistory = serverData;
+        this.updateDataTable(serverData);
       });
+  }
+
+  updateDataTable(data: CommitHistory[]) {
+    const transformedData = {
+      columns: this.columns,
+      rows: data.map((item) => this.transformItemToRow(item)),
+    };
+    new Datatable(document.getElementById('datatable'), transformedData);
+  }
+
+  transformItemToRow(item: CommitHistory) {
+    return {
+      id: item.sha,
+      photo: `<img src="${item.authorAvatar}" alt="User Avatar" class="h-10 w-10 rounded-full">`,
+      author: item.authorName,
+      email: item.authorEmail,
+      message: item.message,
+      date: item.date,
+    };
   }
 
   searchData(value: string) {
@@ -55,19 +62,16 @@ export class CommitHistoryComponent implements OnInit {
         item.authorEmail.includes(value) ||
         item.date.includes(value)
     );
+    this.updateDataTable(filteredData);
+  }
 
-    const transformedData = {
-      columns: this.columns,
-      rows: filteredData.map((item) => ({
-        id: item.sha,
-        photo: `<img src="${item.authorAvatar}" alt="User Avatar" class="h-10 w-10 rounded-full">`,
-        author: item.authorName,
-        email: item.authorEmail,
-        message: item.message,
-        date: item.date,
-      })),
-    };
+  onSearchKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.searchData((event.target as HTMLInputElement).value);
+    }
+  }
 
-    new Datatable(document.getElementById('datatable'), transformedData);
+  onSearchClick(value: string) {
+    this.searchData(value);
   }
 }
